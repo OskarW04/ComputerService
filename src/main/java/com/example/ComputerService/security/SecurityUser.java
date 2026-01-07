@@ -23,8 +23,8 @@ public class SecurityUser implements UserDetails{
 
     // Client constructor
     public SecurityUser(Client client) {
-        this.username = client.getEmail();
-        this.password = client.getPin();
+        this.username = client.getPhone();
+        this.password = "";
         this.authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_CLIENT")
         );

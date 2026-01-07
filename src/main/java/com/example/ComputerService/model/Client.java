@@ -15,7 +15,9 @@ public class Client {
 
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String phone;
     private String email;
     private String pin;
+
 }

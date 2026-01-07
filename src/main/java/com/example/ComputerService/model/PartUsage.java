@@ -17,7 +17,6 @@ public class PartUsage {
 
     private Integer quantity;
 
-    // Zapisujemy cenę w momencie użycia (Snapshot)
     private BigDecimal unitPrice;
 
     @ManyToOne

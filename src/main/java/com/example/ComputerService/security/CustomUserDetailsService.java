@@ -19,17 +19,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        var employeeOpt = employeeRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String ident) throws UsernameNotFoundException {
+        var employeeOpt = employeeRepository.findByEmail(ident);
         if (employeeOpt.isPresent()) {
             return new SecurityUser(employeeOpt.get());
         }
 
-        var clientOpt = clientRepository.findByEmail(email);
+        var clientOpt = clientRepository.findByPhone(ident);
         if (clientOpt.isPresent()) {
             return new SecurityUser(clientOpt.get());
         }
 
-        throw new UsernameNotFoundException("Can't find user with provided email: " + email);
+        throw new UsernameNotFoundException("Can't find user with provided identification: " + ident);
     }
 }
