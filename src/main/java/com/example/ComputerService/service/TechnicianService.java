@@ -11,6 +11,7 @@ import com.example.ComputerService.model.enums.EmployeeRole;
 import com.example.ComputerService.model.enums.RepairOrderStatus;
 import com.example.ComputerService.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,10 @@ public class TechnicianService {
     private final CostEstRepository costEstRepository;
     private final PartUsageRepository partUsageRepository;
     private final SparePartRepository sparePartRepository;
+    private final ActionUsageRepository actionUsageRepository;
+    private final ServiceActionRepository serviceActionRepository;
+
     private final OrderMapper orderMapper;
-    private final PartMapper partMapper;
 
     @Transactional
     public void startDiagnosing(Long orderId, String technicianEmail){
@@ -78,13 +81,26 @@ public class TechnicianService {
                 totalPartsCost = totalPartsCost.add(cost);
             }
         }
+        BigDecimal totalLabourCost = BigDecimal.ZERO;
+        if(request.getServiceActionIds() != null && !request.getServiceActionIds().isEmpty()){
+            for(Long actionId : request.getServiceActionIds()){
+                ServiceAction service = serviceActionRepository.findById(actionId)
+                        .orElseThrow(() -> new RuntimeException("Can't find service with ID: " + actionId));
+                ActionUsage usage = new ActionUsage();
+                usage.setRepairOrder(o);
+                usage.setServiceAction(service);
+                usage.setCurrentPrice(service.getPrice());
+                actionUsageRepository.save(usage);
+                totalLabourCost = totalLabourCost.add(service.getPrice());
+            }
+        }
+
         String currNote = o.getManagerNotes() != null ? o.getManagerNotes()+"\n" : "";
         o.setManagerNotes(currNote + "[DIAGNOSIS] " + request.getMessage());
         o.setStatus(RepairOrderStatus.WAITING_FOR_ACCEPTANCE);
         CostEstimate estimate = new CostEstimate();
         estimate.setApproved(null);
-        BigDecimal labour = request.getLabourCost();
-        estimate.setLabourCost(labour);
+        estimate.setLabourCost(totalLabourCost);
         estimate.setPartsCost(totalPartsCost);
         estimate.setCreatedAt(LocalDateTime.now());
         estimate.setRepairOrder(o);
@@ -94,25 +110,21 @@ public class TechnicianService {
     }
 
 
+    @Transactional
     public String finishOrder(Long orderId, String techEmail){
         RepairOrder order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order doesn't exist"));
         if(!order.getAssignedTechnician().getEmail().equals(techEmail)){
             throw new RuntimeException("This order is not assigned to this technician");
         }
+        if(order.getStatus() != RepairOrderStatus.IN_PROGRESS){
+            throw new RuntimeException("Can only finish orders that are IN PROGRESS. Current status: " + order.getStatus());
+        }
         order.setStatus(RepairOrderStatus.READY_FOR_PICKUP);
         order.setEndDate(LocalDateTime.now());
         RepairOrder savedOrder = orderRepository.save(order);
         return "Order with number: "+ savedOrder.getOrderNumber() +" has been set as finished and ready for pickup by client";
     }
-
-    public List<PartResponse> getAllParts(){
-        return sparePartRepository.findAll()
-                .stream()
-                .map(partMapper::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
 
 
 }

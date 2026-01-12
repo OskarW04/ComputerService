@@ -16,7 +16,7 @@ public class LoadSpareParts implements CommandLineRunner {
         this.sparePartRepository = sparePartRepository;
     }
     @Override
-    public void run(String... args){
+    public void run(String ... args){
         if(sparePartRepository.count() == 0){
             List<SparePart> parts = List.of(
                     new SparePart(null, "Intel Core i5-12400F", "CPU", 5, new BigDecimal("800.00")),

@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 public class CostEstimateRequest {
     private String message;
-    private BigDecimal partsCost;
-    private BigDecimal labourCost;
     private List<PartRequest> partRequestList;
+    private List<Long> serviceActionIds;
 }

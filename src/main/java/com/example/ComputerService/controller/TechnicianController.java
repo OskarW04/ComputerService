@@ -51,4 +51,5 @@ public class TechnicianController {
         String email = auth.getName();
         return ResponseEntity.ok(technicianService.finishOrder(orderId, email));
     }
+
 }
