@@ -1,9 +1,13 @@
 package com.example.ComputerService.controller;
 
+import com.example.ComputerService.dto.request.PaymentRequest;
 import com.example.ComputerService.dto.response.OrderResponse;
+import com.example.ComputerService.dto.response.PaymentResponse;
 import com.example.ComputerService.model.Client;
 import com.example.ComputerService.service.ClientService;
 import com.example.ComputerService.service.OrderService;
+import com.example.ComputerService.service.PaymentService;
+import com.example.ComputerService.service.payment.IPaymentStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +22,7 @@ import java.util.List;
 public class ClientController {
     private final OrderService orderService;
     private final ClientService clientService;
+    private final PaymentService paymentService;
 
     @GetMapping("/getClientOrders")
     @PreAuthorize("hasRole('CLIENT')")
@@ -45,6 +50,15 @@ public class ClientController {
     public ResponseEntity<String> rejectCostEstimate(@PathVariable Long orderId, Authentication auth){
         String phone = auth.getName();
         return ResponseEntity.ok(clientService.rejectCostEstimate(orderId, phone));
+    }
+
+    @PostMapping("/pay/{orderId}")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<PaymentResponse> payForMyOrder(
+            @RequestBody PaymentRequest request,
+            Authentication authentication) {
+        String clientEmail = authentication.getName();
+        return ResponseEntity.ok(paymentService.registerClientPayment(request, clientEmail));
     }
 
 }

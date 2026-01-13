@@ -7,14 +7,11 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Invoice extends BaseDocument {
+public class Receipt extends BaseDocument{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nip;
-    private String companyName;
-    private String companyAddress;
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+
+    private String fiscalCode;
 }

@@ -3,6 +3,7 @@ package com.example.ComputerService.config;
 
 import com.example.ComputerService.model.ServiceAction;
 import com.example.ComputerService.repository.ServiceActionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +11,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class LoadActions implements CommandLineRunner {
-    ServiceActionRepository serviceActionRepository;
+    private final ServiceActionRepository serviceActionRepository;
     @Override
     public void run(String ... args){
         if (serviceActionRepository.count() == 0) {

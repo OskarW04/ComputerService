@@ -1,5 +1,5 @@
 package com.example.ComputerService.model.enums;
 
-public enum InvoiceStatus {
+public enum SaleDocumentStatus {
     ISSUED, PAID, CANCELLED
 }

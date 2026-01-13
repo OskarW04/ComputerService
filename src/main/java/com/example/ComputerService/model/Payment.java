@@ -30,4 +30,15 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
+
+    @ManyToOne
+    @JoinColumn(name = "receipt_id")
+    private Receipt receipt;
+
+    public Payment(BigDecimal amount, PaymentMethod method) {
+        this.amount = amount;
+        this.method = method;
+        this.paymentDate = LocalDateTime.now();
+        this.status = PaymentStatus.PENDING_SYNC;
+    }
 }
