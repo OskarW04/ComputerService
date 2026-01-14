@@ -1,12 +1,11 @@
 package com.example.ComputerService.mapper;
 
+import com.example.ComputerService.dto.response.ActionResponse;
 import com.example.ComputerService.dto.response.CostEstimateResponse;
 import com.example.ComputerService.dto.response.OrderResponse;
 import com.example.ComputerService.dto.response.PartResponse;
-import com.example.ComputerService.model.CostEstimate;
-import com.example.ComputerService.model.PartUsage;
-import com.example.ComputerService.model.RepairOrder;
-import com.example.ComputerService.model.SparePart;
+import com.example.ComputerService.model.*;
+import com.example.ComputerService.repository.ActionUsageRepository;
 import com.example.ComputerService.repository.CostEstRepository;
 import com.example.ComputerService.repository.PartUsageRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,9 @@ public class OrderMapper {
     private final CostEstRepository costEstRepository;
     private final CostEstimateMapper costEstimateMapper;
     private final PartUsageRepository partUsageRepository;
+    private final ActionUsageRepository actionUsageRepository;
     private final PartMapper partMapper;
+    private final ActionMapper actionMapper;
 
     public OrderResponse mapToResponse(RepairOrder order){
         CostEstimate estimate = costEstRepository.findByRepairOrder(order)
@@ -31,7 +32,11 @@ public class OrderMapper {
             List<PartResponse> partResponses = usages.stream()
                     .map(partMapper::mapUsageToResponse)
                     .toList();
-            estResponse = costEstimateMapper.mapToResponse(estimate, partResponses);
+            List<ActionUsage> actions = actionUsageRepository.findByRepairOrder(order);
+            List<ActionResponse> actionResponses = actions.stream()
+                    .map(actionMapper::mapToResponse)
+                    .toList();
+            estResponse = costEstimateMapper.mapToResponse(estimate, partResponses, actionResponses);
         }
 
         return mapToResponse(order, estResponse);

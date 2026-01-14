@@ -3,22 +3,17 @@ package com.example.ComputerService.service;
 import com.example.ComputerService.dto.request.CostEstimateRequest;
 import com.example.ComputerService.dto.request.PartRequest;
 import com.example.ComputerService.dto.response.OrderResponse;
-import com.example.ComputerService.dto.response.PartResponse;
 import com.example.ComputerService.mapper.OrderMapper;
-import com.example.ComputerService.mapper.PartMapper;
 import com.example.ComputerService.model.*;
 import com.example.ComputerService.model.enums.EmployeeRole;
 import com.example.ComputerService.model.enums.RepairOrderStatus;
 import com.example.ComputerService.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

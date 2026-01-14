@@ -18,4 +18,5 @@ public class CostEstimateResponse {
     private BigDecimal labourCost;
     private BigDecimal totalCost;
     private List<PartResponse> parts;
+    private List<ActionResponse> actions;
 }

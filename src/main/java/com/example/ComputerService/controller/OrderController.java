@@ -21,7 +21,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(request));
     }
 
-
     @GetMapping("/getAll")
     @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<List<OrderResponse>> getAllOrders(){
