@@ -22,9 +22,9 @@ public class OpenApiConfig {
                         .description("API do zarządzania serwisem komputerowym, zleceniami, dokumentami i płatnościami.")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Twój Serwis")
-                                .email("kontakt@serwis.pl")
-                                .url("https://serwis.pl"))
+                                .name("Computer Service")
+                                .email("")
+                                .url(""))
                 )
                 .servers(List.of(
                 new Server()
