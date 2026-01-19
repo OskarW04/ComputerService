@@ -23,14 +23,14 @@ public class TechnicianController {
     private final TechnicianService technicianService;
 
     @GetMapping("/getAssignedOrders")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'MANAGER')")
     public ResponseEntity<List<OrderResponse>> getAssignedOrders(Authentication auth){
         String email = auth.getName();
         return ResponseEntity.ok(orderService.getOrdersForTechnician(email));
     }
 
     @PatchMapping("/{orderId}/startDiagnosing")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'MANAGER')")
     public ResponseEntity<String> startDiagnosing(Authentication auth, @PathVariable Long orderId){
         String email = auth.getName();
         technicianService.startDiagnosing(orderId, email);
@@ -39,14 +39,14 @@ public class TechnicianController {
     }
 
     @PostMapping("/{orderId}/generateCostEst")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'MANAGER')")
     public ResponseEntity<OrderResponse> generateCostEst(@PathVariable Long orderId, @RequestBody CostEstimateRequest request, Authentication auth){
         String email = auth.getName();
         return ResponseEntity.ok(technicianService.generateCostEst(orderId, request, email));
     }
 
     @PutMapping("/finish/{orderId}")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'MANAGER')")
     public ResponseEntity<String> finishOrder(@PathVariable Long orderId, Authentication auth){
         String email = auth.getName();
         return ResponseEntity.ok(technicianService.finishOrder(orderId, email));

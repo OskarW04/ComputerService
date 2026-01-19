@@ -50,14 +50,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/employees/**", "/api/services/**").hasRole("MANAGER")
 
                         // Office worker can register clients and create invoices
-                        .requestMatchers("/api/clients/**").hasRole("OFFICE")
-                        .requestMatchers("/api/invoices/**").hasRole("OFFICE")
+                        .requestMatchers("/api/clients/**").hasAnyRole("OFFICE", "MANAGER")
+                        .requestMatchers("/api/invoices/**").hasAnyRole("OFFICE", "MANAGER")
 
                         // Technician
-                        .requestMatchers("/api/technician/**").hasRole("TECHNICIAN")
+                        .requestMatchers("/api/technician/**").hasAnyRole("TECHNICIAN", "MANAGER")
 
                         // Client
-                        .requestMatchers("/api/client-portal/**").hasRole("CLIENT")
+                        .requestMatchers("/api/client-portal/**").hasAnyRole("CLIENT", "MANAGER")
 
                         // Rest
                         .anyRequest().authenticated()

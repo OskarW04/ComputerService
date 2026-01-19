@@ -36,37 +36,37 @@ public class OfficeController {
     }
 
     @GetMapping("/getAllClients")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<List<ClientResponse>> getAllClients(){
         return ResponseEntity.ok(clientService.getAllClients());
     }
 
     @GetMapping("/get/{phone}")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<ClientResponse> getClient(@PathVariable String phone){
         return ResponseEntity.ok(clientService.getClientByPhone(phone));
     }
 
     @PutMapping("/acceptEstimateForClient/{orderId}")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<String> acceptForClient(@PathVariable Long orderId){
         return ResponseEntity.ok(officeService.acceptCostEstimateForClient(orderId));
     }
 
     @PutMapping("/rejectEstimateForClient/{orderId}")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<String> rejectForClient(@PathVariable Long orderId){
         return ResponseEntity.ok(officeService.rejectCostEstimateForClient(orderId));
     }
 
     @PostMapping("/order/createSaleDocument")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<BaseDocument> createDocument(@RequestBody DocumentCreationRequest request){
         return ResponseEntity.ok(financeService.createSaleDocument(request));
     }
 
     @GetMapping("/order/{orderNumber}/generatePdf")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable String orderNumber){
         byte[] pdfBytes = financeService.getDocumentPdf(orderNumber);
         return ResponseEntity.ok()
@@ -76,7 +76,7 @@ public class OfficeController {
     }
 
     @PostMapping("/payment")
-    @PreAuthorize("hasRole('OFFICE')")
+    @PreAuthorize("hasAnyRole('OFFICE', 'MANAGER')")
     public ResponseEntity<PaymentResponse> registerPayment(@RequestBody PaymentRequest request) {
         return ResponseEntity.ok(paymentService.registerPayment(request));
     }

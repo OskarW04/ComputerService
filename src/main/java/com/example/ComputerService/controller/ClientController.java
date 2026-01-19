@@ -25,35 +25,35 @@ public class ClientController {
     private final PaymentService paymentService;
 
     @GetMapping("/getClientOrders")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
     public ResponseEntity<List<OrderResponse>> getClientOrders(Authentication auth){
         String phone = auth.getName();
         return ResponseEntity.ok(orderService.getOrdersForClient(phone));
     }
 
     @GetMapping("/getOrder/{orderId}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
     public ResponseEntity<OrderResponse> getClientOrder(@PathVariable Long orderId, Authentication auth){
         String phone = auth.getName();
         return ResponseEntity.ok(orderService.getClientOrder(orderId, phone));
     }
 
     @PutMapping("/accept/{orderId}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
     public ResponseEntity<String> acceptCostEstimate(@PathVariable Long orderId, Authentication auth){
         String phone = auth.getName();
         return ResponseEntity.ok(clientService.acceptCostEstimate(orderId, phone));
     }
 
     @PutMapping("/reject/{orderId}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
     public ResponseEntity<String> rejectCostEstimate(@PathVariable Long orderId, Authentication auth){
         String phone = auth.getName();
         return ResponseEntity.ok(clientService.rejectCostEstimate(orderId, phone));
     }
 
     @PostMapping("/pay/{orderId}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
     public ResponseEntity<PaymentResponse> payForMyOrder(
             @RequestBody PaymentRequest request,
             Authentication authentication) {

@@ -27,32 +27,32 @@ public class WarehouseController {
     }
 
     @PostMapping("/addPart")
-    @PreAuthorize("hasRole('WAREHOUSE')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<SparePart> addNewPart(@RequestBody SparePart part) {
         return ResponseEntity.ok(warehouseService.addNewSparePart(part));
     }
 
     // Deliveries
     @GetMapping("/order/getAllOrders")
-    @PreAuthorize("hasRole('WAREHOUSE')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<List<PartOrder>> getAllSupplyOrders() {
         return ResponseEntity.ok(warehouseService.getAllSupplyOrders());
     }
 
     @PostMapping("/order/createOrder")
-    @PreAuthorize("hasRole('WAREHOUSE')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<PartOrder> createSupplyOrder(@RequestBody SupplyOrderRequest request) {
         return ResponseEntity.ok(warehouseService.createSupplyOrder(request));
     }
 
     @PostMapping("/order/{id}/receive")
-    @PreAuthorize("hasRole('WAREHOUSE')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<String> receiveSupply(@PathVariable Long id) {
         return ResponseEntity.ok(warehouseService.receiveSupply(id));
     }
 
     @PostMapping("/withdraw")
-    @PreAuthorize("hasRole('WAREHOUSE')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<String> withdrawPart(@RequestBody PartRequest request) {
         return ResponseEntity.ok(warehouseService.withdrawPart(request));
     }
