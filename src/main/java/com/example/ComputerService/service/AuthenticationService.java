@@ -2,8 +2,11 @@ package com.example.ComputerService.service;
 
 import com.example.ComputerService.dto.request.LoginRequest;
 import com.example.ComputerService.dto.response.AuthResponse;
+import com.example.ComputerService.dto.response.EmployeeResponse;
 import com.example.ComputerService.dto.response.PinGenResponse;
+import com.example.ComputerService.mapper.EmployeeMapper;
 import com.example.ComputerService.model.Client;
+import com.example.ComputerService.model.Employee;
 import com.example.ComputerService.repository.ClientRepository;
 import com.example.ComputerService.repository.EmployeeRepository;
 import com.example.ComputerService.security.CustomUserDetailsService;
@@ -24,6 +27,7 @@ public class AuthenticationService {
     private final ClientService clientService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmployeeMapper employeeMapper;
 
     public AuthResponse authenticate(LoginRequest request) {
         String identifier = request.getEmail();
@@ -78,5 +82,11 @@ public class AuthenticationService {
                 pin,
                 "PIN code sent successfully"
         );
+    }
+
+    public EmployeeResponse getMe(String email){
+        Employee emp = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        return employeeMapper.mapToResponse(emp);
     }
 }

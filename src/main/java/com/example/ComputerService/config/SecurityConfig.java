@@ -47,7 +47,6 @@ public class SecurityConfig {
                         // Warehouse and Manager can use spareparts endpoints
                         .requestMatchers("/api/parts/**").hasAnyRole("WAREHOUSE", "MANAGER")
 
-                        // Manager can modify and add Employees, also manipulate dict
                         .requestMatchers("/api/employees/**", "/api/services/**").hasRole("MANAGER")
 
                         // Office worker can register clients and create invoices

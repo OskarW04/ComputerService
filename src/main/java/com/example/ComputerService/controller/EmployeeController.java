@@ -27,7 +27,6 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeResponse>> getAllTech(){
         return ResponseEntity.ok(employeeService.getAllTechnicians());
     }
-
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<EmployeeResponse> getEmployee(@PathVariable Long id){
