@@ -33,6 +33,8 @@ public class SimulateDelivery {
 
             else if (order.getStatus() == PartOrderStatus.IN_DELIVERY) {
                 System.out.println("Order ID: " + order.getId() + " was delivered");
+                order.setStatus(PartOrderStatus.DELIVERED);
+                partOrderRepository.save(order);
             }
         }
     }

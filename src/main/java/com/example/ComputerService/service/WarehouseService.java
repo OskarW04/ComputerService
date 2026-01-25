@@ -2,6 +2,8 @@ package com.example.ComputerService.service;
 
 import com.example.ComputerService.dto.request.PartRequest;
 import com.example.ComputerService.dto.request.SupplyOrderRequest;
+import com.example.ComputerService.dto.response.MissingPart;
+import com.example.ComputerService.dto.response.MissingPartsResponse;
 import com.example.ComputerService.model.PartOrder;
 import com.example.ComputerService.model.PartUsage;
 import com.example.ComputerService.model.RepairOrder;
@@ -20,6 +22,8 @@ import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +97,15 @@ public class WarehouseService {
             orderRepository.save(order);
         }
     }
+
+    private List<PartUsage> getMissingParts(RepairOrder order) {
+        return partUsageRepository.findByRepairOrder(order).stream()
+                .filter(usage -> {
+                    SparePart part = usage.getSparePart();
+                    return part.getStockQuantity() < usage.getQuantity();
+                })
+                .collect(Collectors.toList());
+    }
     public List<PartOrder> getAllSupplyOrders() {
         return partOrderRepository.findAll();
     }
@@ -116,5 +129,40 @@ public class WarehouseService {
         sparePartRepository.save(part);
 
        return "Successful withdrawn of part: " + part.getName() + "Now in stock - " + part.getStockQuantity();
+    }
+
+    public List<MissingPartsResponse> getAllMissingParts(){
+        List<RepairOrder> orders = orderRepository.findAllByStatus(RepairOrderStatus.WAITING_FOR_PARTS);
+
+        return orders.stream()
+                .map(order -> {
+                    List<PartUsage> missingParts = getMissingParts(order);
+                    if(missingParts.isEmpty()){
+                        return null;
+                    }
+                    List<MissingPart> partsDtos = missingParts.stream()
+                            .map(usage -> {
+                                SparePart part = usage.getSparePart();
+                                MissingPart dto =  new MissingPart();
+                                dto.setId(part.getId());
+                                dto.setName(part.getName());
+                                dto.setType(part.getType());
+                                dto.setPrice(part.getPrice());
+
+                                dto.setCurrentCount(part.getStockQuantity());
+                                dto.setNeededCount(usage.getQuantity());
+
+                                return dto;
+                            })
+                            .collect(Collectors.toList());
+                    MissingPartsResponse response = new MissingPartsResponse();
+                    response.setOrderId(order.getId());
+                    response.setOrderNumber(order.getOrderNumber());
+                    response.setParts(partsDtos);
+
+                    return response;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

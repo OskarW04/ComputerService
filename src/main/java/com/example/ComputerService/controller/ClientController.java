@@ -5,10 +5,13 @@ import com.example.ComputerService.dto.response.OrderResponse;
 import com.example.ComputerService.dto.response.PaymentResponse;
 import com.example.ComputerService.model.Client;
 import com.example.ComputerService.service.ClientService;
+import com.example.ComputerService.service.FinanceService;
 import com.example.ComputerService.service.OrderService;
 import com.example.ComputerService.service.PaymentService;
 import com.example.ComputerService.service.payment.IPaymentStrategy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -23,6 +26,7 @@ public class ClientController {
     private final OrderService orderService;
     private final ClientService clientService;
     private final PaymentService paymentService;
+    private final FinanceService financeService;
 
     @GetMapping("/getClientOrders")
     @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
@@ -59,6 +63,16 @@ public class ClientController {
             Authentication authentication) {
         String clientEmail = authentication.getName();
         return ResponseEntity.ok(paymentService.registerClientPayment(request, clientEmail));
+    }
+
+    @GetMapping("/order/{orderNumber}/generatePdf")
+    @PreAuthorize("hasAnyRole('CLIENT', 'MANAGER')")
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable String orderNumber){
+        byte[] pdfBytes = financeService.getDocumentPdf(orderNumber);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=dokument_zlecenia_" + orderNumber.replace("/", "-") + ".pdf")
+                .body(pdfBytes);
     }
 
 }

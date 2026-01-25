@@ -29,16 +29,22 @@ public class ManagerController {
     public ResponseEntity<ServiceAction> addService(@RequestBody ServiceAction serviceAction) {
         return ResponseEntity.ok(actionService.addService(serviceAction));
     }
-    @PutMapping("services/edit/{id}")
+    @PutMapping("/services/edit/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ServiceAction> updateService(@PathVariable Long id, @RequestBody ServiceAction updated) {
         return ResponseEntity.ok(actionService.updateService(id, updated));
     }
 
-    @DeleteMapping("services/delete/{id}")
+    @DeleteMapping("/services/delete/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> deleteService(@PathVariable Long id){
         return ResponseEntity.ok(actionService.deleteService(id));
+    }
+
+    @DeleteMapping("/order/{orderId}")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId){
+        return ResponseEntity.ok(orderService.deleteOrder(orderId));
     }
 
 }

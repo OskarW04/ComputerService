@@ -56,7 +56,7 @@ public class SecurityConfig {
                         // Wyjątek: Technik musi widzieć listę części, żeby zrobić kosztorys
                         .requestMatchers("/api/warehouse/getAllParts").hasAnyRole("WAREHOUSE", "MANAGER", "TECHNICIAN")
                         // Reszta magazynu tylko dla Magazyniera i Managera
-                        .requestMatchers("/api/warehouse/**").hasAnyRole("WAREHOUSE", "MANAGER")
+                        .requestMatchers("/api/warehouse/**").hasAnyRole("WAREHOUSE", "MANAGER", "TECHNICIAN")
 
                         // --- TECHNIK (Technician) ---
                         .requestMatchers("/api/tech/**").hasAnyRole("TECHNICIAN", "MANAGER")

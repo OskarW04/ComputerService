@@ -118,5 +118,12 @@ public class OrderService {
         return orderMapper.mapToResponse(o);
     }
 
+    @Transactional
+    public String deleteOrder(Long orderId){
+        RepairOrder toDel = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("This order does not exist"));
+        orderRepository.delete(toDel);
+        return "Successfully deleted order with ID: " + orderId;
+    }
 
 }

@@ -5,9 +5,7 @@ import com.example.ComputerService.dto.response.CostEstimateResponse;
 import com.example.ComputerService.dto.response.OrderResponse;
 import com.example.ComputerService.dto.response.PartResponse;
 import com.example.ComputerService.model.*;
-import com.example.ComputerService.repository.ActionUsageRepository;
-import com.example.ComputerService.repository.CostEstRepository;
-import com.example.ComputerService.repository.PartUsageRepository;
+import com.example.ComputerService.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +18,8 @@ public class OrderMapper {
     private final CostEstimateMapper costEstimateMapper;
     private final PartUsageRepository partUsageRepository;
     private final ActionUsageRepository actionUsageRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final ReceiptRepository receiptRepository;
     private final PartMapper partMapper;
     private final ActionMapper actionMapper;
 
@@ -42,6 +42,11 @@ public class OrderMapper {
         return mapToResponse(order, estResponse);
     }
 
+    private Boolean isSaleDocumentAssigned(RepairOrder order){
+        return invoiceRepository.existsByRepairOrder(order)
+                || receiptRepository.existsByRepairOrder(order);
+    }
+
     public OrderResponse mapToResponse(RepairOrder order, CostEstimateResponse est){
         // technician may be null if order is new
         String techName = null;
@@ -59,6 +64,7 @@ public class OrderMapper {
                 order.getDeviceDescription(),
                 order.getProblemDescription(),
                 order.getStatus().name(),
+                isSaleDocumentAssigned(order),
                 order.getClient().getId(),
                 order.getClient().getFirstName() + " " + order.getClient().getLastName(),
                 order.getClient().getPhone(),

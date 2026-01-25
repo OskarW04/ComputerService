@@ -2,6 +2,7 @@ package com.example.ComputerService.controller;
 
 import com.example.ComputerService.dto.request.PartRequest;
 import com.example.ComputerService.dto.request.SupplyOrderRequest;
+import com.example.ComputerService.dto.response.MissingPartsResponse;
 import com.example.ComputerService.model.PartOrder;
 import com.example.ComputerService.model.SparePart;
 import com.example.ComputerService.repository.SparePartRepository;
@@ -34,7 +35,7 @@ public class WarehouseController {
 
     // Deliveries
     @GetMapping("/order/getAllOrders")
-    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER', 'TECHNICIAN')")
     public ResponseEntity<List<PartOrder>> getAllSupplyOrders() {
         return ResponseEntity.ok(warehouseService.getAllSupplyOrders());
     }
@@ -51,6 +52,11 @@ public class WarehouseController {
         return ResponseEntity.ok(warehouseService.receiveSupply(id));
     }
 
+    @GetMapping("/parts/getAllWaiting")
+    @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
+    public ResponseEntity<List<MissingPartsResponse>> getAllWaiting(){
+        return ResponseEntity.ok(warehouseService.getAllMissingParts());
+    }
     @PostMapping("/withdraw")
     @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
     public ResponseEntity<String> withdrawPart(@RequestBody PartRequest request) {

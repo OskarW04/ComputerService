@@ -11,6 +11,5 @@ import lombok.Data;
 @Data
 public class SupplyOrderRequest {
     private Integer quantity;
-    private PartOrderStatus status;
     private Long sparePartId;
 }

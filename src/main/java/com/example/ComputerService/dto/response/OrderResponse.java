@@ -19,6 +19,7 @@ public class OrderResponse {
     private String deviceDescription;
     private String problemDescription;
     private String status;
+    private Boolean isSaleDocumentGenerated;
 
     private Long clientId;
     private String clientName;
