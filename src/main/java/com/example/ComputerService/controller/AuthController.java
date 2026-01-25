@@ -10,6 +10,7 @@ import com.example.ComputerService.service.AuthenticationService;
 import com.example.ComputerService.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,12 @@ public class AuthController {
     public ResponseEntity<EmployeeResponse> getMe(Authentication auth){
         String email = auth.getName();
         return ResponseEntity.ok(authService.getMe(email));
+    }
+
+    @GetMapping("/getMeClient")
+    public ResponseEntity<ClientResponse> getMeClient(Authentication auth){
+        String phone = auth.getName();
+        return ResponseEntity.ok(authService.getMeClient(phone));
     }
 
 

@@ -2,8 +2,10 @@ package com.example.ComputerService.service;
 
 import com.example.ComputerService.dto.request.LoginRequest;
 import com.example.ComputerService.dto.response.AuthResponse;
+import com.example.ComputerService.dto.response.ClientResponse;
 import com.example.ComputerService.dto.response.EmployeeResponse;
 import com.example.ComputerService.dto.response.PinGenResponse;
+import com.example.ComputerService.mapper.ClientMapper;
 import com.example.ComputerService.mapper.EmployeeMapper;
 import com.example.ComputerService.model.Client;
 import com.example.ComputerService.model.Employee;
@@ -28,6 +30,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmployeeMapper employeeMapper;
+    private final ClientMapper clientMapper;
 
     public AuthResponse authenticate(LoginRequest request) {
         String identifier = request.getEmail();
@@ -88,5 +91,11 @@ public class AuthenticationService {
         Employee emp = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
         return employeeMapper.mapToResponse(emp);
+    }
+
+    public ClientResponse getMeClient(String phone){
+        Client cl = clientRepository.findByPhone(phone)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        return clientMapper.mapToResponse(cl);
     }
 }
