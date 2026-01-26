@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,8 +50,9 @@ public class WarehouseController {
 
     @PostMapping("/order/{id}/receive")
     @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
-    public ResponseEntity<String> receiveSupply(@PathVariable Long id) {
-        return ResponseEntity.ok(warehouseService.receiveSupply(id));
+    public ResponseEntity<Map<String,String>> receiveSupply(@PathVariable Long id) {
+        String serviceMessage = warehouseService.receiveSupply(id);
+        return ResponseEntity.ok(Collections.singletonMap("message", serviceMessage));
     }
 
     @GetMapping("/parts/getAllWaiting")
@@ -59,7 +62,8 @@ public class WarehouseController {
     }
     @PostMapping("/withdraw")
     @PreAuthorize("hasAnyRole('WAREHOUSE', 'MANAGER')")
-    public ResponseEntity<String> withdrawPart(@RequestBody PartRequest request) {
-        return ResponseEntity.ok(warehouseService.withdrawPart(request));
+    public ResponseEntity<Map<String, String>> withdrawPart(@RequestBody PartRequest request) {
+        String serviceMessage = warehouseService.withdrawPart(request);
+        return ResponseEntity.ok(Collections.singletonMap("message", serviceMessage));
     }
 }
